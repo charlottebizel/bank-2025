@@ -1,57 +1,81 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace banque
 {
     public class Bank
     {
+        // Propriétés
         public string Name { get; set; }
-        public Dictionary<string, CurrentAccount> Accounts { get; private set; }
+        public Dictionary<string, Account> Accounts { get; private set; }
 
+        // Constructeur
         public Bank(string name)
         {
             Name = name;
-            Accounts = new Dictionary<string, CurrentAccount>();
+            Accounts = new Dictionary<string, Account>();
         }
 
-        public void AddAccount(CurrentAccount account)
+        // Ajouter un compte
+        public void AddAccount(Account account)
         {
+            if (account == null)
+            {
+                Console.WriteLine(" Compte invalide.");
+                return;
+            }
+
             if (Accounts.ContainsKey(account.Number))
             {
-                Console.WriteLine("⚠️ Un compte avec ce numéro existe déjà !");
+                Console.WriteLine($" Le compte {account.Number} existe déjà.");
                 return;
             }
 
             Accounts.Add(account.Number, account);
-            Console.WriteLine($"✅ Compte {account.Number} ajouté à la banque {Name}.");
+            Console.WriteLine($" Compte {account.Number} ajouté.");
         }
 
+        // Supprimer un compte
         public void DeleteAccount(string number)
         {
-            if (Accounts.Remove(number))
-                Console.WriteLine($" Compte {number} supprimé.");
-            else
-                Console.WriteLine($"Aucun compte trouvé avec le numéro {number}.");
+            if (!Accounts.ContainsKey(number))
+            {
+                Console.WriteLine($" Le compte {number} n'existe pas.");
+                return;
+            }
+
+            Accounts.Remove(number);
+            Console.WriteLine($" Compte {number} supprimé.");
         }
 
+        // Obtenir le solde d'un compte
         public double GetBalance(string number)
         {
-            if (Accounts.TryGetValue(number, out CurrentAccount account))
-                return account.Balance;
+            if (!Accounts.ContainsKey(number))
+            {
+                Console.WriteLine($" Le compte {number} n'existe pas.");
+                return 0;
+            }
 
-            Console.WriteLine(" Compte introuvable !");
-            return 0;
+            return Accounts[number].GetBalance();
         }
 
-        public double GetTotalBalance(Person person)
+        // Somme de tous les comptes d'une personne
+        public double GetTotalBalance(Person owner)
         {
-            double total = 0;
-            foreach (var acc in Accounts.Values)
+            return Accounts.Values
+                           .Where(a => a.Owner == owner)
+                           .Sum(a => a.GetBalance());
+        }
+
+        // Afficher tous les comptes (facultatif)
+        public void DisplayAllAccounts()
+        {
+            foreach (var account in Accounts.Values)
             {
-                if (acc.Owner == person)
-                    total += acc.Balance;
+                Console.WriteLine(account);
             }
-            return total;
         }
     }
 }

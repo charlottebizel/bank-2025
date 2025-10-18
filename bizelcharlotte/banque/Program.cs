@@ -7,7 +7,7 @@ namespace banque
     {
         static void Main()
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8; // pour afficher les € correctement
+            Console.OutputEncoding = System.Text.Encoding.UTF8; // affichage des € correctement
 
             Bank banque = new Bank("Banque Centrale");
 
@@ -97,7 +97,7 @@ namespace banque
             Console.Write("Montant à déposer (€) : ");
             double montant = double.Parse(Console.ReadLine());
 
-            if (banque.Accounts.TryGetValue(num, out CurrentAccount compte))
+            if (banque.Accounts.TryGetValue(num, out Account compte))
                 compte.Deposit(montant);
             else
                 Console.WriteLine("Compte introuvable !");
@@ -111,8 +111,8 @@ namespace banque
             Console.Write("Montant à retirer (€) : ");
             double montant = double.Parse(Console.ReadLine());
 
-            if (banque.Accounts.TryGetValue(num, out CurrentAccount compte))
-                compte.Withdraw(montant);
+            if (banque.Accounts.TryGetValue(num, out Account compte))
+                ((CurrentAccount)compte).Withdraw(montant);
             else
                 Console.WriteLine("Compte introuvable !");
         }
