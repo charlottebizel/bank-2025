@@ -15,9 +15,6 @@ namespace banque
             BirthDate = birthDate;
         }
 
-        public override string ToString()
-        {
-            return $"{FirstName} {LastName}";
-        }
+        public override string ToString() => $"{FirstName} {LastName}";
     }
 }

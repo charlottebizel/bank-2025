@@ -2,15 +2,12 @@ using System;
 
 namespace banque
 {
-    // Classe abstraite pour les comptes
     public abstract class Account
     {
-        // Propriétés communes
         public string Number { get; set; }
-        public double Balance { get; private set; }
         public Person Owner { get; set; }
+        private double Balance { get; set; } // encapsulation stricte
 
-        // Constructeur
         public Account(string number, Person owner)
         {
             Number = number;
@@ -18,53 +15,54 @@ namespace banque
             Balance = 0;
         }
 
-        // Méthode virtuelle pour déposer de l'argent
+        // 🔹 Dépôt
         public virtual void Deposit(double amount)
         {
             if (amount <= 0)
             {
-                Console.WriteLine(" Montant invalide pour le dépôt.");
+                Console.WriteLine("🫗 Montant invalide pour le dépôt.");
                 return;
             }
 
             Balance += amount;
-            Console.WriteLine($"{amount:C} déposés sur le compte {Number}. Nouveau solde : {Balance:C}");
+            Console.WriteLine($"🍦 {amount:C} déposés sur le compte {Number}. Nouveau solde : {Balance:C}");
         }
 
-        // Méthode virtuelle pour retirer de l'argent
+        // 🔹 Retrait
         public virtual void Withdraw(double amount)
         {
             if (amount <= 0)
             {
-                Console.WriteLine(" Montant invalide pour le retrait.");
+                Console.WriteLine("🫗 Montant invalide pour le retrait.");
                 return;
             }
 
             if (amount > Balance)
             {
-                Console.WriteLine($" Retrait refusé : solde insuffisant. Solde actuel : {Balance:C}");
+                Console.WriteLine($"🫗 Retrait refusé : solde insuffisant ({Balance:C}).");
                 return;
             }
 
             Balance -= amount;
-            Console.WriteLine($" {amount:C} retirés du compte {Number}. Nouveau solde : {Balance:C}");
+            Console.WriteLine($"🍫 {amount:C} retirés du compte {Number}. Nouveau solde : {Balance:C}");
         }
 
-        // Méthode pour accéder au solde (lecture seule depuis l'extérieur)
-        public double GetBalance()
+        // 🔹 Accesseurs protégés
+        public double GetBalance() => Balance;
+        protected void SetBalance(double amount) => Balance = amount;
+
+        // 🔹 MÉTHODE ABSTRAITE → redéfinie dans les classes filles
+        protected abstract double CalculInterets();
+
+        // 🔹 MÉTHODE PUBLIQUE → applique le taux d’intérêt calculé
+        public void ApplyInterest()
         {
-            return Balance;
+            double interets = CalculInterets();
+            Balance += interets;
+            Console.WriteLine($"🍓 Intérêts appliqués sur le compte {Number} : {interets:C}. Nouveau solde : {Balance:C}");
         }
 
-        public override string ToString()
-        {
-            return $"Compte {Number} - Titulaire : {Owner} - Solde : {Balance:C}";
-        }
-
-        // Méthode protégée pour permettre aux classes dérivées de modifier le solde
-        protected void SetBalance(double amount)
-        {
-            Balance = amount;
-        }
+        public override string ToString() =>
+            $"Compte {Number} - Titulaire : {Owner} - Solde : {Balance:C}";
     }
 }
