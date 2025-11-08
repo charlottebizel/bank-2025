@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using banque.Models;
 
 namespace banque
 {
@@ -14,27 +15,25 @@ namespace banque
         public void AddAccount(Account account)
         {
             if (account == null || Accounts.ContainsKey(account.Number))
-            {
-                Console.WriteLine("🫗 Compte invalide ou déjà existant.");
-                return;
-            }
+                throw new ArgumentException("Compte invalide ou déjà existant.");
+
             Accounts[account.Number] = account;
             Console.WriteLine($"🎂 Compte {account.Number} ajouté à la banque {Name}.");
         }
 
         public void DeleteAccount(string number)
         {
-            if (Accounts.Remove(number))
-                Console.WriteLine($"🥕 Compte {number} supprimé.");
-            else
+            if (!Accounts.Remove(number))
                 Console.WriteLine($"🥨 Le compte {number} n'existe pas.");
+            else
+                Console.WriteLine($"🥕 Compte {number} supprimé.");
         }
 
         public double GetBalance(string number) =>
-            Accounts.ContainsKey(number) ? Accounts[number].GetBalance() : 0;
+            Accounts.ContainsKey(number) ? Accounts[number].Balance : 0;
 
         public double GetTotalBalance(Person owner) =>
-            Accounts.Values.Where(a => a.Owner == owner).Sum(a => a.GetBalance());
+            Accounts.Values.Where(a => a.Owner == owner).Sum(a => a.Balance);
 
         public void DisplayAllAccounts()
         {

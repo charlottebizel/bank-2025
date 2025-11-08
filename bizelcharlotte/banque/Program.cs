@@ -1,4 +1,5 @@
 ﻿using System;
+using banque.Models;
 
 namespace banque
 {
@@ -21,7 +22,6 @@ namespace banque
             sa.Deposit(800);
             sa.Withdraw(150);
 
-            // 💵 Application des intérêts
             Console.WriteLine("\n--- Application des intérêts ---");
             ca.ApplyInterest();
             sa.ApplyInterest();
